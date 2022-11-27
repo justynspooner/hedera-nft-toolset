@@ -1,0 +1,11 @@
+node_modules
+dist
+yarn-error.log
+.DS_Store
+.env
+image.jpeg
+raw_image.jpeg
+videos
+images
+output
+input

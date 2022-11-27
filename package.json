@@ -1,0 +1,27 @@
+{
+  "name": "hedera-nft-toolset",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "token:create": "ts-node ./src/create.ts",
+    "token:mint": "ts-node ./src/mint.ts",
+    "token:burn": "ts-node ./src/burn.ts"
+  },
+  "author": "Justyn",
+  "license": "ISC",
+  "dependencies": {
+    "@hashgraph/sdk": "2.18.6",
+    "ajv": "^8.11.2",
+    "ajv-formats": "^2.1.1",
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
+    "lodash": "^4.17.21",
+    "nft.storage": "^6.2.0",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.182",
+    "@types/node": "16"
+  }
+}

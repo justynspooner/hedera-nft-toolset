@@ -1,0 +1,25 @@
+HEDERA_NETWORK=testnet
+
+NFT_STORAGE_KEY=xxx
+
+# Used to pay for transactions
+
+OPERATOR_ACCOUNT_ID=x.x.xxxxxxx
+OPERATOR_PRIVATE_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Used to hold the newly created tokens
+
+TREASURY_ACCOUNT_ID=x.x.xxxxxxx
+TREASURY_PRIVATE_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Used to pay for the renewal of the NFT
+
+AUTO_RENEW_ACCOUNT_ID=x.x.xxxxxxx
+AUTO_RENEW_PRIVATE_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Use to mint new tokens into the treasury
+
+NFT_TOKEN_ID=x.x.xxxxxxx
+NFT_SUPPLY_PRIVATE_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+MERGE_ATTRIBUTES_TO_PROPERTIES=false
