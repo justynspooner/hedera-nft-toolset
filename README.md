@@ -1,3 +1,5 @@
+Please use this code at your own risk. By using this code you agree to take full responsibility for any damage or loss of data that may occur. This code is provided as-is with no warranty or guarantee of any kind. You are responsible for testing this code in a non-production environment before using it in production.
+
 # Hedera NFT Toolset
 
 Initially forked from [HSuite](https://github.com/HbarSuite/nft-minter), this is a collection of tools for working with NFTs on the Hedera Hashgraph.
