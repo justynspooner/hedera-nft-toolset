@@ -7,7 +7,7 @@ async function main() {
 
 main()
   .then(() => {
-    console.log("🔥 NFTs have been minted successfully! 💎🦶");
+    console.log("🔥 All queued NFTs have been minted successfully! 🎉");
     process.exit(0);
   })
   .catch((error) => {

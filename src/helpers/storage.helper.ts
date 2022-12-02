@@ -23,7 +23,7 @@ export class StorageHelper {
 
   readFile(isJSON: boolean = false) {
     try {
-      const content = fs.readFileSync(this.filePath, { flag: "a+" });
+      const content = fs.readFileSync(this.filePath, { flag: "r" });
       let buffer = null;
 
       if (isJSON) {
