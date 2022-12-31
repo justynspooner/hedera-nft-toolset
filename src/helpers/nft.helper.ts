@@ -2,6 +2,7 @@ import { NFTStorage, File, Blob } from "nft.storage";
 import {
   AccountId,
   Client,
+  Hbar,
   NftId,
   PrivateKey,
   TokenBurnTransaction,
@@ -314,6 +315,7 @@ export class NftHelper {
       try {
         const transaction = new TokenMintTransaction()
           .setTokenId(tokenId)
+          .setMaxTransactionFee(new Hbar(100))
           .addMetadata(Buffer.from(CID))
           .freezeWith(this.client);
 
