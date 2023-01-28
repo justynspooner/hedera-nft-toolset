@@ -5,7 +5,8 @@
   "scripts": {
     "token:create": "ts-node ./src/create.ts",
     "token:mint": "ts-node ./src/mint.ts",
-    "token:burn": "ts-node ./src/burn.ts"
+    "token:burn": "ts-node ./src/burn.ts",
+    "token:clone": "ts-node ./src/clone.ts"
   },
   "author": "Justyn",
   "license": "ISC",

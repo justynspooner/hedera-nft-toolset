@@ -238,3 +238,17 @@ $ npm run token:burn
 or
 $ yarn token:burn
 ```
+
+## Cloning Tokens
+
+Hedera have begun resetting the testnet every quarter, which means that all the tokens and NFTs that you have created will be deleted. It can be a pain if you have to recreate all your tokens and NFTs every time.
+
+The `token:clone` script will allow you to clone an existing token from mainnet and all of its NFTs to a new token on testnet.
+
+Just run the following command, replacing the token ID with the ID of the token you want to clone:
+
+```bash
+$ npm run token:clone 0.0.1234567
+or
+$ yarn token:clone 0.0.1234567
+```
