@@ -79,12 +79,12 @@
     protobufjs "^7.0.0"
     yargs "^16.2.0"
 
-"@hashgraph/cryptography@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@hashgraph/cryptography/-/cryptography-1.4.1.tgz#7dcba4bc867037d2f192c419ceb48e3725e09e95"
-  integrity sha512-Qx7fl58Upyf1C4Xdqo2DdMaELYAni3RpAr6fVux3tpGUwp0Wo+zaWseW7k2Klg+FPlmjOjL8XBCXkOr1AbHYWQ==
+"@hashgraph/cryptography@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@hashgraph/cryptography/-/cryptography-1.4.2.tgz#adb3be1bf13b65247e8aa50b8134fc11a9897ae1"
+  integrity sha512-9p9wZvB7JQ7sgcllVHOQb8qxVvkYVfH4TjDsNiy/V38WOXNdf9L8CMd/A3zFP+eXm9jtrybqxmtLZHVO2XZ2lA==
   dependencies:
-    bignumber.js "^9.0.2"
+    bignumber.js "^9.1.0"
     crypto-js "^4.1.1"
     elliptic "^6.5.4"
     js-base64 "^3.7.2"
@@ -99,14 +99,14 @@
     long "^4.0.0"
     protobufjs "^6.11.3"
 
-"@hashgraph/sdk@2.18.6":
-  version "2.18.6"
-  resolved "https://registry.yarnpkg.com/@hashgraph/sdk/-/sdk-2.18.6.tgz#19077f56eb20a6a18b81aabdba2019067cf9e04f"
-  integrity sha512-t7PEUFNzQZsP8a+fP9i/KijYh3bO13HhnU5EODbtWByeIecQUQ6/cywE29XcLHkcPx+HD1drOlsOs6dujGMl1g==
+"@hashgraph/sdk@2.19.2":
+  version "2.19.2"
+  resolved "https://registry.yarnpkg.com/@hashgraph/sdk/-/sdk-2.19.2.tgz#4333386f8924648c0fc729c26ecf463e99a5fba4"
+  integrity sha512-cFS+kCukk2Y8ZyjX5XZBLMylXRyWbghkpIGDKNHQdpU3JJ7Xbp/r23hOxn4aQnz6jbO1GSH5447gCQHkfIENoQ==
   dependencies:
     "@ethersproject/rlp" "^5.7.0"
     "@grpc/grpc-js" "^1.7.0"
-    "@hashgraph/cryptography" "^1.4.1"
+    "@hashgraph/cryptography" "^1.4.2"
     "@hashgraph/proto" "2.11.0"
     axios "^0.27.2"
     bignumber.js "^9.1.0"
@@ -422,11 +422,6 @@ base64-js@^1.3.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
-
-bignumber.js@^9.0.2:
-  version "9.0.2"
-  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.2.tgz#71c6c6bed38de64e24a65ebe16cfcf23ae693673"
-  integrity sha512-GAcQvbpsM0pUb0zw1EI0KhQEZ+lRwR5fYaAp3vPOYuP7aDvGy6cVN6XHLauvF8SOga2y0dcLcjt3iQDTSEliyw==
 
 bignumber.js@^9.1.0:
   version "9.1.0"

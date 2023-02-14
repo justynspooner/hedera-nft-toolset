@@ -6,12 +6,13 @@
     "token:create": "ts-node ./src/create.ts",
     "token:mint": "ts-node ./src/mint.ts",
     "token:burn": "ts-node ./src/burn.ts",
-    "token:clone": "ts-node ./src/clone.ts"
+    "token:clone": "ts-node ./src/clone.ts",
+    "token:allowance": "ts-node ./src/allowance.ts"
   },
   "author": "Justyn",
   "license": "ISC",
   "dependencies": {
-    "@hashgraph/sdk": "2.18.6",
+    "@hashgraph/sdk": "2.19.2",
     "ajv": "^8.11.2",
     "ajv-formats": "^2.1.1",
     "axios": "^0.27.2",
