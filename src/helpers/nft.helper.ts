@@ -5,6 +5,7 @@ import {
   Hbar,
   NftId,
   PrivateKey,
+  Status,
   TokenBurnTransaction,
   TokenId,
   TokenMintTransaction,
@@ -83,10 +84,17 @@ export class NftHelper {
           console.log(
             `\n⏳ Processing NFT ${i + 1} of ${nfts.length}: ${nft.name}...`
           );
-          let nftToken: any = await this.generateNft(nft);
-          console.log(
-            `\n✅ Successfully minted serial #${nftToken.serials[0].toString()}\n`
-          );
+          let serials: any = await this.generateNft(nft);
+
+          if (serials.length > 1) {
+            console.log(
+              `\n✅ Successfully minted serials #${serials[0]} to #${
+                serials[serials.length - 1]
+              }\n`
+            );
+          } else {
+            console.log(`\n✅ Successfully minted serial #${serials[0]}\n`);
+          }
         } catch (error: any) {
           reject(
             new Error(
@@ -178,6 +186,7 @@ export class NftHelper {
     return new Promise(async (resolve, reject) => {
       try {
         const {
+          quantity = 1,
           name,
           image,
           creator,
@@ -287,15 +296,17 @@ export class NftHelper {
 
         console.log(`\n👍 Metadata uploaded to IPFS`);
         console.log(
-          `🔗 View it here: https://${metadataCid}.ipfs.nftstorage.link`
+          `🔗 View it here: https://${metadataCid}.ipfs.nftstorage.link\n`
         );
 
         const ipfsUrl = `ipfs://${metadataCid}/metadata.json`;
+
         // minting the proxied nft...
-        let nftToken = await this.mintNftToken(
+        let nftToken = await this.batchMintNftToken(
           TokenId.fromString(this.nft.token),
           PrivateKey.fromString(this.nft.supplyKey),
-          ipfsUrl
+          ipfsUrl,
+          quantity
         );
 
         // finally, resolving the proxied nft token...
@@ -306,28 +317,72 @@ export class NftHelper {
     });
   }
 
-  async mintNftToken(
+  async mintNft({
+    tokenId,
+    metadataArray,
+    supplyKey,
+  }: {
+    tokenId: TokenId;
+    metadataArray: Array<Buffer>;
+    supplyKey: PrivateKey;
+  }): Promise<TransactionReceipt> {
+    const transaction = new TokenMintTransaction()
+      .setTokenId(tokenId)
+      .setMaxTransactionFee(new Hbar(100))
+      .setMetadata(metadataArray)
+      .freezeWith(this.client);
+
+    const signTx = await transaction.sign(supplyKey);
+    const txResponse = await signTx.execute(this.client);
+    const receipt = await txResponse.getReceipt(this.client);
+
+    if (receipt.status !== Status.Success) {
+      throw new Error(`Error while minting NFT - ${receipt.toString()}`);
+    }
+
+    return receipt;
+  }
+
+  async batchMintNftToken(
     tokenId: TokenId,
     supplyKey: PrivateKey,
-    CID: string
-  ): Promise<TransactionReceipt> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const transaction = new TokenMintTransaction()
-          .setTokenId(tokenId)
-          .setMaxTransactionFee(new Hbar(100))
-          .addMetadata(Buffer.from(CID))
-          .freezeWith(this.client);
+    CID: string,
+    quantity: number
+  ): Promise<Array<Long>> {
+    const batchSize = 10;
+    const mintedSerialNumbers: Array<Long> = [];
+    const remainder = quantity % batchSize;
 
-        const signTx = await transaction.sign(supplyKey);
-        const txResponse = await signTx.execute(this.client);
-        const receipt = await txResponse.getReceipt(this.client);
+    // Loop through the quantity in batches of 10
+    for (let i = 0; i < quantity - remainder; i += batchSize) {
+      const metadataArray: Array<Buffer> = Array(batchSize).fill(
+        Buffer.from(CID)
+      );
 
-        resolve(receipt);
-      } catch (error) {
-        reject(error);
-      }
-    });
+      const receipt = await this.mintNft({ tokenId, metadataArray, supplyKey });
+
+      mintedSerialNumbers.push(...receipt.serials);
+
+      console.log(
+        `🖌️ Minted ${i + batchSize}/${quantity} serials for token ${tokenId}`
+      );
+    }
+
+    // Mint the remainder
+    if (remainder > 0) {
+      const metadataArray: Array<Buffer> = Array(remainder).fill(
+        Buffer.from(CID)
+      );
+
+      const receipt = await this.mintNft({ tokenId, metadataArray, supplyKey });
+
+      mintedSerialNumbers.push(...receipt.serials);
+
+      console.log(
+        `🖌️ Minted ${quantity}/${quantity} serials for token ${tokenId}`
+      );
+    }
+    return mintedSerialNumbers;
   }
 
   async getNftInfo(
