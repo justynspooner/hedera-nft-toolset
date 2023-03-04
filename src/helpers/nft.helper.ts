@@ -123,55 +123,47 @@ export class NftHelper {
     properties: any;
     attributes: Array<{ trait_type: string; value: string | number }>;
   }): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const metadata = {
-          name,
-          creator,
-          description,
-          image,
-          type,
-          format,
-          ...(files.length ? { files } : {}),
-          ...(properties ? { properties } : {}),
-          ...(attributes ? { attributes } : {}),
-        };
+    const metadata = {
+      name,
+      creator,
+      description,
+      image,
+      type,
+      format,
+      ...(files.length ? { files } : {}),
+      ...(properties ? { properties } : {}),
+      ...(attributes ? { attributes } : {}),
+    };
 
-        if (!validate(metadata)) {
-          throw new Error(
-            `Metadata is not HIP412 compliant:\n${JSON.stringify(
-              validate.errors,
-              null,
-              4
-            )}`
-          );
-        }
+    if (!validate(metadata)) {
+      throw new Error(
+        `Metadata is not HIP412 compliant:\n${JSON.stringify(
+          validate.errors,
+          null,
+          4
+        )}`
+      );
+    }
 
-        console.log(
-          `\n🙌 Standards FTW! Your metadata passes HIP412 validation!`
-        );
-        console.log(`\n📤 Uploading metadata.json to IPFS`);
-        console.log(`⏳ Please wait...`);
+    console.log(`\n🙌 Standards FTW! Your metadata passes HIP412 validation!`);
+    console.log(`\n📤 Uploading metadata.json to IPFS`);
+    console.log(`⏳ Please wait...`);
 
-        const metadataFile = new File(
-          [JSON.stringify(metadata, null, 2)],
-          "metadata.json",
-          {
-            type: "application/json",
-          }
-        );
-
-        const metadataCid = await this.nftClient.storeDirectory([metadataFile]);
-
-        if (metadataCid) {
-          resolve(metadataCid);
-        } else {
-          reject(new Error("Unable to store metadata"));
-        }
-      } catch (error) {
-        reject(error);
+    const metadataFile = new File(
+      [JSON.stringify(metadata, null, 2)],
+      "metadata.json",
+      {
+        type: "application/json",
       }
-    });
+    );
+
+    const metadataCid = await this.nftClient.storeDirectory([metadataFile]);
+
+    if (metadataCid) {
+      return metadataCid;
+    } else {
+      throw new Error("Unable to store metadata");
+    }
   }
 
   async generateNft(nft: any) {
@@ -189,15 +181,26 @@ export class NftHelper {
           files = [],
         } = nft;
 
+        let isImageURL = false;
+
+        try {
+          isImageURL = Boolean(new URL(image));
+        } catch (_) {
+          isImageURL = false;
+        }
+
+        const mediaFiles = [];
         const imageFileName = image.split("/").pop();
 
-        const imageBinary = await new StorageHelper(
-          `${MEDIA_ROOT_FILE_PATH}${image}`
-        ).readFile();
+        if (!isImageURL) {
+          const imageBinary = await new StorageHelper(
+            `${MEDIA_ROOT_FILE_PATH}${image}`
+          ).readFile();
 
-        const imageFile = new File([imageBinary], imageFileName, { type });
+          const imageFile = new File([imageBinary], imageFileName, { type });
 
-        const mediaFiles = [imageFile];
+          mediaFiles.push(imageFile);
+        }
 
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
@@ -212,6 +215,10 @@ export class NftHelper {
             );
           }
 
+          try {
+            if (Boolean(new URL(uri))) continue;
+          } catch (_) {}
+
           const mediaFileName = uri.split("/").pop();
 
           let binaryData: Buffer = await new StorageHelper(
@@ -223,22 +230,31 @@ export class NftHelper {
           mediaFiles.push(mediaFile);
         }
 
-        console.log(
-          `\n📤 Uploading ${mediaFiles.length} media file(s) to IPFS:`
-        );
+        let cid = "";
+        if (mediaFiles.length) {
+          console.log(
+            `\n📤 Uploading ${mediaFiles.length} media file(s) to IPFS:`
+          );
 
-        mediaFiles.forEach((file, index) => {
-          console.log(`📄 ${index + 1}: ${file.name}`);
-        });
+          mediaFiles.forEach((file, index) => {
+            console.log(`📄 ${index + 1}: ${file.name}`);
+          });
 
-        console.log(`\n⏳ Please wait, this could take a while...`);
+          console.log(`\n⏳ Please wait, this could take a while...`);
 
-        const ipfsCid = await this.nftClient.storeDirectory(mediaFiles);
+          const ipfsCid = await this.nftClient.storeDirectory(mediaFiles);
 
-        const { cid } = await this.nftClient.status(ipfsCid);
+          const { cid: returnCid } = await this.nftClient.status(ipfsCid);
 
-        console.log(`\n👌 Success uploading to IPFS directory`);
-        console.log(`🔗 View them here: https://${cid}.ipfs.nftstorage.link`);
+          console.log(`\n👌 Success uploading to IPFS directory`);
+          console.log(
+            `🔗 View them here: https://${returnCid}.ipfs.nftstorage.link`
+          );
+
+          cid = returnCid;
+        } else {
+          console.log(`\n📤 No media file(s) require uploading to IPFS:`);
+        }
 
         let propertiesData = properties;
 
@@ -266,12 +282,20 @@ export class NftHelper {
           name,
           creator,
           description,
-          image: `ipfs://${cid}/${imageFileName}`,
+          image: isImageURL ? image : `ipfs://${cid}/${imageFileName}`,
           type,
-          files: files.map((file: any) => ({
-            ...file,
-            uri: `ipfs://${cid}/${file.uri.split("/").pop()}`,
-          })),
+          files: files.map((file: any) => {
+            let isURL = false;
+            try {
+              isURL = Boolean(new URL(file.uri));
+            } catch (_) {}
+
+            if (isURL) return file;
+            return {
+              ...file,
+              uri: `ipfs://${cid}/${file.uri.split("/").pop()}`,
+            };
+          }),
           format,
           properties: propertiesData,
           attributes,
