@@ -1,4 +1,4 @@
-import { NftHelper } from "./helpers/nft.helper";
+import { NftHelper } from "../helpers/nft.helper";
 
 async function main() {
   let nftHelper = new NftHelper();

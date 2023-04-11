@@ -3,6 +3,7 @@ dist
 yarn-error.log
 .DS_Store
 .env
+.env.*
 image.jpeg
 raw_image.jpeg
 videos

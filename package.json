@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "token:create": "ts-node ./src/create.ts",
-    "token:mint": "ts-node ./src/mint.ts",
-    "token:burn": "ts-node ./src/burn.ts",
-    "token:clone": "ts-node ./src/clone.ts"
+    "token:create": "ts-node ./src/token/create.ts",
+    "token:mint": "ts-node ./src/token/mint.ts",
+    "token:burn": "ts-node ./src/token/burn.ts",
+    "token:clone": "ts-node ./src/token/clone.ts",
+    "fungibleToken:create": "ts-node ./src/token/create-ft.ts",
+    "topic:create": "ts-node ./src/topic/create.ts",
+    "topic:submit": "ts-node ./src/topic/submit.ts",
+    "account:create": "ts-node ./src/account/create.ts",
+    "crypto:sendHbar": "ts-node ./src/crypto/sendHbar.ts"
   },
   "author": "Justyn",
   "license": "ISC",

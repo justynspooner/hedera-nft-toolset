@@ -133,6 +133,7 @@ async function main() {
       .freezeWithSigner(wallet);
 
     transaction = await transaction.sign(treasuryPrivateKey);
+    transaction = await transaction.signWithSigner(wallet);
 
     const response = await transaction.executeWithSigner(wallet);
 

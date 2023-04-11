@@ -5,24 +5,13 @@ import {
   TokenType,
   TokenSupplyType,
   PrivateKey,
-  CustomRoyaltyFee,
   Hbar,
   HbarUnit,
-  CustomFixedFee,
 } from "@hashgraph/sdk";
 import dotenv from "dotenv";
 import fs from "fs";
-import validate from "./validators/tokenInfoValidator";
-
-export interface InputTokenInfo {
-  tokenName: string;
-  tokenSymbol: string;
-  royalties: {
-    recipient: string;
-    percentage: number;
-    fallbackFeeInHbar?: number;
-  }[];
-}
+import validate from "../validators/tokenInfoValidator";
+import { InputTokenInfo } from "../../types";
 
 dotenv.config();
 
@@ -31,6 +20,8 @@ const CREATE_TOKEN_REQUIRED_ENVS = [
   "OPERATOR_PRIVATE_KEY",
   "TREASURY_ACCOUNT_ID",
   "TREASURY_PRIVATE_KEY",
+  "AUTO_RENEW_ACCOUNT_ID",
+  "AUTO_RENEW_PRIVATE_KEY",
 ];
 
 async function main() {
@@ -48,7 +39,8 @@ async function main() {
   // Check that token info is valid
   validate(tokenInfo);
 
-  const { tokenName, tokenSymbol, royalties } = tokenInfo;
+  const { tokenName, tokenSymbol, decimals, maxSupply, initialSupply } =
+    tokenInfo;
 
   const wallet = new Wallet(
     process.env.OPERATOR_ACCOUNT_ID!,
@@ -70,36 +62,18 @@ async function main() {
   const supplyPrivateKey = await PrivateKey.generate();
   const supplyPublicKey = supplyPrivateKey.publicKey;
 
-  const customFees: Array<CustomRoyaltyFee> = [];
-
-  royalties.forEach(({ recipient, percentage, fallbackFeeInHbar }) => {
-    const customRoyaltyFee = new CustomRoyaltyFee()
-      .setNumerator(percentage)
-      .setDenominator(100)
-      .setFeeCollectorAccountId(recipient)
-      .setAllCollectorsAreExempt(true);
-
-    if (fallbackFeeInHbar) {
-      customRoyaltyFee.setFallbackFee(
-        new CustomFixedFee().setHbarAmount(new Hbar(fallbackFeeInHbar))
-      );
-    }
-
-    customFees.push(customRoyaltyFee);
-  });
-
   // Build the transaction
   let transaction = await new TokenCreateTransaction({
     tokenName,
     tokenSymbol,
-    decimals: 0,
-    initialSupply: 0,
+    decimals,
+    initialSupply,
+    maxSupply,
     treasuryAccountId: process.env.TREASURY_ACCOUNT_ID!,
     supplyKey: supplyPublicKey,
     autoRenewAccountId: process.env.AUTO_RENEW_ACCOUNT_ID!,
-    tokenType: TokenType.NonFungibleUnique,
-    supplyType: TokenSupplyType.Infinite,
-    customFees,
+    tokenType: TokenType.FungibleCommon,
+    supplyType: TokenSupplyType.Finite,
   })
     .setMaxTransactionFee(new Hbar(100, HbarUnit.Hbar))
     .freezeWithSigner(wallet);
@@ -122,7 +96,9 @@ async function main() {
     tokenId: tokenId?.toString(),
     tokenName,
     tokenSymbol,
-    royalties,
+    decimals,
+    maxSupply,
+    initialSupply,
     supplyKey: {
       privateKey: supplyPrivateKey.toString(),
       publicKey: supplyPublicKey.toString(),
@@ -136,12 +112,12 @@ async function main() {
 
   // Save the keys to a file
   fs.writeFileSync(
-    `./output/token-secrets-${tokenId}.json`,
+    `./output/fungible-token-secrets-${tokenId}.json`,
     JSON.stringify(secretTokenInfo, null, 2)
   );
 
   console.log(
-    `🔥 ${tokenName} token ${tokenId} created successfully!\nIMPORTANT: Backup "../output/token-secrets-${tokenId}.json" to a safe place. You'll need the token ID and supply private key to mint tokens.`
+    `🔥 ${tokenName} token ${tokenId} created successfully!\nIMPORTANT: Backup "../output/fungible-token-secrets-${tokenId}.json" to a safe place. You'll need the token ID and supply private key to mint tokens.`
   );
 
   process.exit(0);

@@ -1,5 +1,5 @@
-import { NftHelper } from "./helpers/nft.helper";
-import serialsToBurn from "../input/serialsToBurn.json";
+import { NftHelper } from "../helpers/nft.helper";
+import serialsToBurn from "../../input/serialsToBurn.json";
 
 async function main() {
   let nftHelper = new NftHelper();

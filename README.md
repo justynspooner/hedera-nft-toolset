@@ -245,6 +245,18 @@ Hedera have begun resetting the testnet every quarter, which means that all the 
 
 The `token:clone` script will allow you to clone an existing token from mainnet and all of its NFTs to a new token on testnet.
 
+You'll need to fill the following fields in your `.env` file:
+
+```bash
+  OPERATOR_ACCOUNT_ID=0.0.xxxxxx
+  OPERATOR_PRIVATE_KEY=0.0.xxxxxx
+  TREASURY_ACCOUNT_ID=0.0.xxxxxx
+  TREASURY_PRIVATE_KEY=0.0.xxxxxx
+  AUTO_RENEW_ACCOUNT_ID=0.0.xxxxxx
+```
+
+The new tokens will be cloned to the `TREASURY_ACCOUNT_ID`
+
 Just run the following command, replacing the token ID with the ID of the token you want to clone:
 
 ```bash

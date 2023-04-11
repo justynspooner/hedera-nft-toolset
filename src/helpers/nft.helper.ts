@@ -16,7 +16,7 @@ import { StorageHelper } from "./storage.helper";
 import nfts from "../../input/mintQueue.json";
 import validate from "../validators/hip412Validator";
 
-require("dotenv").config();
+require("../helpers/load-environment");
 
 const MEDIA_ROOT_FILE_PATH = "./input/media/";
 
