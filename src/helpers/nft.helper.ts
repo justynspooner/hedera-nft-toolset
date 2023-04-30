@@ -95,6 +95,11 @@ export class NftHelper {
           } else {
             console.log(`\n✅ Successfully minted serial #${serials[0]}\n`);
           }
+
+          // log the location of the token id on hashscan
+          console.log(
+            `🔗 View on Hash Scan: https://hashscan.io/testnet/token/${this.nft.token}`
+          );
         } catch (error: any) {
           reject(
             new Error(
