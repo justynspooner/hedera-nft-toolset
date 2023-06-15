@@ -12,6 +12,7 @@ import {
   TokenNftInfo,
   TokenNftInfoQuery,
   TransactionReceipt,
+  TransactionResponse,
 } from "@hashgraph/sdk";
 import { StorageHelper } from "./storage.helper";
 import nfts from "../../input/mintQueue.json";
@@ -71,48 +72,44 @@ export class NftHelper {
   }
 
   async mintNfts() {
-    return new Promise(async (resolve, reject) => {
-      console.log(
-        `\nMinting ${nfts.length} NFT(s) to token ID ${this.nft.token}`
-      );
+    console.log(
+      `\nMinting ${nfts.length} NFT(s) to token ID ${this.nft.token}`
+    );
 
-      for (let i = 0; i < nfts.length; i++) {
-        let nft = nfts[i];
+    for (let i = 0; i < nfts.length; i++) {
+      let nft = nfts[i];
 
-        try {
-          console.log("----------------------------------------");
+      try {
+        console.log("----------------------------------------");
+        console.log(
+          `\n⏳ Processing NFT ${i + 1} of ${nfts.length}: ${nft.name}...`
+        );
+        let serials: any = await this.generateNft(nft);
+
+        if (serials.length > 1) {
           console.log(
-            `\n⏳ Processing NFT ${i + 1} of ${nfts.length}: ${nft.name}...`
+            `\n✅ Successfully minted serials #${serials[0]} to #${
+              serials[serials.length - 1]
+            }\n`
           );
-          let serials: any = await this.generateNft(nft);
-
-          if (serials.length > 1) {
-            console.log(
-              `\n✅ Successfully minted serials #${serials[0]} to #${
-                serials[serials.length - 1]
-              }\n`
-            );
-          } else {
-            console.log(`\n✅ Successfully minted serial #${serials[0]}\n`);
-          }
-
-          // log the location of the token id on hashscan
-          console.log(
-            `🔗 View on Hash Scan: https://hashscan.io/testnet/token/${this.nft.token}`
-          );
-        } catch (error: any) {
-          reject(
-            new Error(
-              `Error while minting NFT number ${i + 1} - ${nft.name}: ${
-                error.message
-              }`
-            )
-          );
-          break;
+        } else if (serials.length === 1) {
+          console.log(`\n✅ Successfully minted serial #${serials[0]}\n`);
+        } else {
+          console.log(`\n✅ Successfully minted NFTs\n`);
         }
+
+        // log the location of the token id on hashscan
+        console.log(
+          `🔗 View on Hash Scan: https://hashscan.io/testnet/token/${this.nft.token}`
+        );
+      } catch (error: any) {
+        throw new Error(
+          `Error while minting NFT number ${i + 1} - ${nft.name}: ${
+            error.message
+          }`
+        );
       }
-      resolve(true);
-    });
+    }
   }
 
   async storeNftMetaData({
@@ -354,7 +351,7 @@ export class NftHelper {
     tokenId: TokenId;
     metadataArray: Array<Buffer>;
     supplyKey: PrivateKey;
-  }): Promise<TransactionReceipt> {
+  }): Promise<TransactionResponse> {
     const transaction = new TokenMintTransaction()
       .setTokenId(tokenId)
       .setMaxTransactionFee(new Hbar(100))
@@ -363,13 +360,13 @@ export class NftHelper {
 
     const signTx = await transaction.sign(supplyKey);
     const txResponse = await signTx.execute(this.client);
-    const receipt = await txResponse.getReceipt(this.client);
+    // const receipt = await txResponse.getReceipt(this.client);
 
-    if (receipt.status !== Status.Success) {
-      throw new Error(`Error while minting NFT - ${receipt.toString()}`);
-    }
+    // if (receipt.status !== Status.Success) {
+    //   throw new Error(`Error while minting NFT - ${receipt.toString()}`);
+    // }
 
-    return receipt;
+    return txResponse;
   }
 
   async batchMintNftToken(
@@ -390,7 +387,7 @@ export class NftHelper {
 
       const receipt = await this.mintNft({ tokenId, metadataArray, supplyKey });
 
-      mintedSerialNumbers.push(...receipt.serials);
+      // mintedSerialNumbers.push(...receipt.serials);
 
       console.log(
         `🖌️ Minted ${i + batchSize}/${quantity} serials for token ${tokenId}`
@@ -405,7 +402,7 @@ export class NftHelper {
 
       const receipt = await this.mintNft({ tokenId, metadataArray, supplyKey });
 
-      mintedSerialNumbers.push(...receipt.serials);
+      // mintedSerialNumbers.push(...receipt.serials);
 
       console.log(
         `🖌️ Minted ${quantity}/${quantity} serials for token ${tokenId}`

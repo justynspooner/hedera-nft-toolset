@@ -8,12 +8,11 @@ import {
   Hbar,
   HbarUnit,
 } from "@hashgraph/sdk";
-import dotenv from "dotenv";
 import fs from "fs";
 import validate from "../validators/tokenInfoValidator";
 import { InputTokenInfo } from "../../types";
 
-dotenv.config();
+require("../helpers/load-environment");
 
 const CREATE_TOKEN_REQUIRED_ENVS = [
   "OPERATOR_ACCOUNT_ID",
@@ -33,7 +32,7 @@ async function main() {
 
   // Read in the token info from the JSON file
   const tokenInfo: InputTokenInfo = JSON.parse(
-    fs.readFileSync("./input/tokenInfo.json", "utf8")
+    fs.readFileSync("./input/FT_tokenInfo.json", "utf8")
   );
 
   // Check that token info is valid
@@ -59,7 +58,15 @@ async function main() {
   );
 
   // Create a new supply key
-  const supplyPrivateKey = await PrivateKey.generate();
+  const supplyPrivateKeyString = process.env.SUPPLY_PRIVATE_KEY;
+  let supplyPrivateKey: PrivateKey;
+
+  if (supplyPrivateKeyString) {
+    supplyPrivateKey = PrivateKey.fromString(supplyPrivateKeyString);
+  } else {
+    supplyPrivateKey = await PrivateKey.generate();
+  }
+
   const supplyPublicKey = supplyPrivateKey.publicKey;
 
   // Build the transaction

@@ -38,9 +38,9 @@ const hip412Schema = {
     },
     format: {
       type: "string",
-      default: "HIP412@1.0.0",
+      default: "HIP412@2.0.0",
       description:
-        "Name of the format or schema used by the NFT. For this schema representing Hedera Collectible NFts, set 'format' to 'HIP412@1.0.0'.",
+        "Name of the format or schema used by the NFT. For this schema representing Hedera Collectible NFts, set 'format' to 'HIP412@2.0.0'.",
     },
     properties: {
       type: "object",

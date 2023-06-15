@@ -7,17 +7,13 @@ import {
   TokenId,
   AccountId,
 } from "@hashgraph/sdk";
-import dotenv from "dotenv";
 
-dotenv.config();
+require("../helpers/load-environment");
 
-const CREATE_TOKEN_REQUIRED_ENVS = [
-  "OPERATOR_ACCOUNT_ID",
-  "OPERATOR_PRIVATE_KEY",
-];
+const SEND_HBAR_REQUIRED_ENVS = ["OPERATOR_ACCOUNT_ID", "OPERATOR_PRIVATE_KEY"];
 
 async function main() {
-  for (const env of CREATE_TOKEN_REQUIRED_ENVS) {
+  for (const env of SEND_HBAR_REQUIRED_ENVS) {
     if (process.env[env] == null) {
       throw new Error(`environment variable ${env} must be present`);
     }

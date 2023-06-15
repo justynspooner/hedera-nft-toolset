@@ -21,6 +21,8 @@ const CREATE_TOKEN_REQUIRED_ENVS = [
   "OPERATOR_PRIVATE_KEY",
   "TREASURY_ACCOUNT_ID",
   "TREASURY_PRIVATE_KEY",
+  "AUTO_RENEW_ACCOUNT_ID",
+  "AUTO_RENEW_PRIVATE_KEY",
 ];
 
 async function main() {
@@ -38,7 +40,7 @@ async function main() {
   // Check that token info is valid
   validate(tokenInfo);
 
-  const { tokenName, tokenSymbol, royalties } = tokenInfo;
+  const { tokenName, tokenSymbol, maxSupply, royalties } = tokenInfo;
 
   const wallet = new Wallet(
     process.env.OPERATOR_ACCOUNT_ID!,
@@ -56,8 +58,16 @@ async function main() {
     process.env.AUTO_RENEW_PRIVATE_KEY!
   );
 
-  // Create a new supply key
-  const supplyPrivateKey = await PrivateKey.generate();
+  // Use an existing supply key or generate a new one
+  const supplyPrivateKeyString = process.env.SUPPLY_PRIVATE_KEY;
+  let supplyPrivateKey: PrivateKey;
+
+  if (supplyPrivateKeyString) {
+    supplyPrivateKey = PrivateKey.fromString(supplyPrivateKeyString);
+  } else {
+    supplyPrivateKey = await PrivateKey.generate();
+  }
+
   const supplyPublicKey = supplyPrivateKey.publicKey;
 
   const customFees: Array<CustomRoyaltyFee> = [];
@@ -82,13 +92,14 @@ async function main() {
   let transaction = await new TokenCreateTransaction({
     tokenName,
     tokenSymbol,
+    maxSupply,
     decimals: 0,
     initialSupply: 0,
     treasuryAccountId: process.env.TREASURY_ACCOUNT_ID!,
     supplyKey: supplyPublicKey,
     autoRenewAccountId: process.env.AUTO_RENEW_ACCOUNT_ID!,
     tokenType: TokenType.NonFungibleUnique,
-    supplyType: TokenSupplyType.Infinite,
+    supplyType: maxSupply ? TokenSupplyType.Finite : TokenSupplyType.Infinite,
     customFees,
   })
     .setMaxTransactionFee(new Hbar(100, HbarUnit.Hbar))

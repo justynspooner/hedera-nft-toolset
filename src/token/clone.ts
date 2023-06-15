@@ -13,7 +13,7 @@ import {
 } from "@hashgraph/sdk";
 import axios from "axios";
 
-import dotenv from "dotenv";
+require("../helpers/load-environment");
 
 const CREATE_TOKEN_REQUIRED_ENVS = [
   "OPERATOR_ACCOUNT_ID",
@@ -22,8 +22,6 @@ const CREATE_TOKEN_REQUIRED_ENVS = [
   "TREASURY_PRIVATE_KEY",
   "AUTO_RENEW_ACCOUNT_ID",
 ];
-
-dotenv.config();
 
 async function main() {
   for (const env of CREATE_TOKEN_REQUIRED_ENVS) {
