@@ -17,6 +17,12 @@ TREASURY_PRIVATE_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 AUTO_RENEW_ACCOUNT_ID=x.x.xxxxxxx
 AUTO_RENEW_PRIVATE_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
+# If set, this supply key will will be used when creating a new Token
+
+# If not set, we will create a new supply key for you
+
+SUPPLY_PRIVATE_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
 # Use to mint new tokens into the treasury
 
 NFT_TOKEN_ID=x.x.xxxxxxx
