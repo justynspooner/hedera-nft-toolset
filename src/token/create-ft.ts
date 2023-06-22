@@ -1,16 +1,16 @@
 import {
-  Wallet,
-  LocalProvider,
-  TokenCreateTransaction,
-  TokenType,
-  TokenSupplyType,
-  PrivateKey,
   Hbar,
   HbarUnit,
+  LocalProvider,
+  PrivateKey,
+  TokenCreateTransaction,
+  TokenSupplyType,
+  TokenType,
+  Wallet,
 } from "@hashgraph/sdk";
 import fs from "fs";
-import validate from "../validators/tokenInfoValidator";
 import { InputTokenInfo } from "../../types";
+import validate from "../validators/tokenInfoValidator";
 
 require("../helpers/load-environment");
 
@@ -69,6 +69,17 @@ async function main() {
 
   const supplyPublicKey = supplyPrivateKey.publicKey;
 
+  // Create a new admin key
+  const adminPrivateKeyString = process.env.ADMIN_PRIVATE_KEY;
+
+  let adminPrivateKey: PrivateKey | undefined;
+
+  if (adminPrivateKeyString) {
+    adminPrivateKey = PrivateKey.fromString(adminPrivateKeyString);
+  }
+
+  const adminPublicKey = adminPrivateKey?.publicKey;
+
   // Build the transaction
   let transaction = await new TokenCreateTransaction({
     tokenName,
@@ -77,6 +88,7 @@ async function main() {
     initialSupply,
     maxSupply,
     treasuryAccountId: process.env.TREASURY_ACCOUNT_ID!,
+    ...(adminPublicKey ? { adminKey: adminPublicKey } : {}),
     supplyKey: supplyPublicKey,
     autoRenewAccountId: process.env.AUTO_RENEW_ACCOUNT_ID!,
     tokenType: TokenType.FungibleCommon,
@@ -87,6 +99,11 @@ async function main() {
 
   transaction = await transaction.signWithSigner(wallet);
   transaction = await transaction.sign(supplyPrivateKey);
+
+  if (adminPrivateKey) {
+    transaction = await transaction.sign(adminPrivateKey);
+  }
+
   transaction = await transaction.sign(treasuryPrivateKey);
   transaction = await transaction.sign(autoRenewPrivateKey);
 
