@@ -1,15 +1,15 @@
 import {
-  Wallet,
-  LocalProvider,
-  TokenCreateTransaction,
-  TokenType,
-  TokenSupplyType,
-  PrivateKey,
   Hbar,
   HbarUnit,
+  LocalProvider,
+  PrivateKey,
+  Status,
+  TokenCreateTransaction,
   TokenId,
   TokenMintTransaction,
-  Status,
+  TokenSupplyType,
+  TokenType,
+  Wallet,
 } from "@hashgraph/sdk";
 import axios from "axios";
 
@@ -44,8 +44,24 @@ async function main() {
     throw new Error("Pass the token ID to clone as the first argument");
   }
 
+  // Read the optional total supply we'd like to clone from the command line
+  let totalSupplyToClone: number | null = null;
+
+  try {
+    const totalSupplyToCloneString = process.argv[3];
+    totalSupplyToClone = parseInt(totalSupplyToCloneString, 10);
+  } catch (error) {
+    throw new Error("Invalid total supply");
+  }
+
+  if (totalSupplyToClone != null && totalSupplyToClone < 0) {
+    throw new Error("Total supply must be a positive integer");
+  }
+
+  const totalToClone = totalSupplyToClone || "all";
+
   console.log(
-    `🐑🐑 Cloning Token ID from mainnet ${validatedTokenIdToClone.toString()} to testnet…`
+    `🐑🐑 Cloning ${totalToClone} NFTs from mainnet Token ID ${validatedTokenIdToClone.toString()} to testnet…`
   );
 
   const { data: tokenInfo } = await axios.get(
@@ -53,7 +69,7 @@ async function main() {
   );
 
   const metadata: Array<Uint8Array> = [];
-  let nextPath = `/api/v1/tokens/${validatedTokenIdToClone.toString()}/nfts`;
+  let nextPath = `/api/v1/tokens/${validatedTokenIdToClone.toString()}/nfts?order=asc&limit=100`;
   while (nextPath) {
     const { data } = await axios.get(
       `https://mainnet-public.mirrornode.hedera.com${nextPath}`
@@ -65,11 +81,17 @@ async function main() {
 
     metadata.push(...nftMetadata);
 
+    if (totalSupplyToClone != null && metadata.length >= totalSupplyToClone) {
+      break;
+    }
+
     nextPath = data?.links?.next || null;
   }
 
-  // Reverse the metadata so that the NFTs are minted in the same order as mainnet
-  metadata.reverse();
+  // Truncate the metadata array if we're cloning a subset
+  if (totalSupplyToClone != null) {
+    metadata.length = totalSupplyToClone;
+  }
 
   const wallet = new Wallet(
     process.env.OPERATOR_ACCOUNT_ID!,
