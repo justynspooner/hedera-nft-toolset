@@ -11,12 +11,15 @@
     "topic:create": "ts-node ./src/topic/create.ts",
     "topic:submit": "ts-node ./src/topic/submit.ts",
     "account:create": "ts-node ./src/account/create.ts",
-    "crypto:sendHbar": "ts-node ./src/crypto/sendHbar.ts"
+    "account:createFromEvm": "ts-node ./src/account/createFromEvm.ts",
+    "crypto:sendHbar": "ts-node ./src/crypto/sendHbar.ts",
+    "crypto:sendToken": "ts-node ./src/crypto/sendToken.ts",
+    "crypto:sendTokenToAlias": "ts-node ./src/crypto/sendTokenToAlias.ts"
   },
   "author": "Justyn",
   "license": "ISC",
   "dependencies": {
-    "@hashgraph/sdk": "^2.20.0",
+    "@hashgraph/sdk": "^2.32.0",
     "ajv": "^8.11.2",
     "ajv-formats": "^2.1.1",
     "axios": "^0.27.2",

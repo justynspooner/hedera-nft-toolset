@@ -1,11 +1,9 @@
-import { NFTStorage, File, Blob } from "nft.storage";
 import {
   AccountId,
   Client,
   Hbar,
   NftId,
   PrivateKey,
-  Status,
   TokenBurnTransaction,
   TokenId,
   TokenMintTransaction,
@@ -14,9 +12,10 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from "@hashgraph/sdk";
-import { StorageHelper } from "./storage.helper";
+import { File, NFTStorage } from "nft.storage";
 import nfts from "../../input/mintQueue.json";
 import validate from "../validators/hip412Validator";
+import { StorageHelper } from "./storage.helper";
 
 require("../helpers/load-environment");
 
@@ -100,7 +99,7 @@ export class NftHelper {
 
         // log the location of the token id on hashscan
         console.log(
-          `🔗 View on Hash Scan: https://hashscan.io/testnet/token/${this.nft.token}`
+          `🔗 View on Hash Scan: https://hashscan.io/${process.env.HEDERA_NETWORK}/token/${this.nft.token}`
         );
       } catch (error: any) {
         throw new Error(

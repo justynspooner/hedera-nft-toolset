@@ -1,11 +1,11 @@
 import {
-  Wallet,
-  LocalProvider,
   Hbar,
   HbarUnit,
+  LocalProvider,
   Status,
   TopicId,
   TopicMessageSubmitTransaction,
+  Wallet,
 } from "@hashgraph/sdk";
 
 require("../helpers/load-environment");
@@ -15,15 +15,8 @@ const CREATE_TOKEN_REQUIRED_ENVS = [
   "OPERATOR_PRIVATE_KEY",
 ];
 
-const ruleDefinitionMessage = {
-  type: "define-rules",
-  title: "JJ",
-  description: "JJ Governance Voting Stream",
-  tokenId: "0.0.624505",
-  minVotingThreshold: 0.1,
-  minimumVotingPeriod: 1,
-  minimumStandoffPeriod: 0,
-};
+// Set the message that you'd like to submit to the topic
+const topicMessage = "Hello Future!";
 
 async function main() {
   for (const env of CREATE_TOKEN_REQUIRED_ENVS) {
@@ -54,7 +47,7 @@ async function main() {
 
   let transaction = await new TopicMessageSubmitTransaction({
     topicId: topicIdToSubmitTo,
-    message: JSON.stringify(ruleDefinitionMessage, null, 4),
+    message: JSON.stringify(topicMessage, null, 4),
   })
     .setMaxTransactionFee(new Hbar(100, HbarUnit.Hbar))
     .freezeWithSigner(wallet);
