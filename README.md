@@ -6,7 +6,9 @@ Initially forked from [HSuite](https://github.com/HbarSuite/nft-minter), this is
 
 ## Installation
 
-Install the dependencies and devDependencies and start the server.
+First install Node from [here](https://nodejs.org/en/download/).
+
+Then you can install the dependencies and devDependencies by running:
 
 ```bash
 $ npm install
