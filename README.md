@@ -56,44 +56,44 @@ NFT_SUPPLY_PRIVATE_KEY          = <your nft supply private key>
 MERGE_ATTRIBUTES_TO_PROPERTIES  = <true or false>
 ```
 
-### NFT_STORAGE_KEY
+#### NFT_STORAGE_KEY
 
 This is used to upload the NFT metadata and images to IPFS (Interplanetary File System).
 Sign up for a free NFT Storage account here: https://nft.storage/login/ to get your API key.
 
-### OPERATOR_ACCOUNT_ID
+#### OPERATOR_ACCOUNT_ID
 
 The Hedera account ID that will pay for all the transactions, this is different to the treasury account id that will hold the NFTs.
 
-### OPERATOR_PRIVATE_KEY
+#### OPERATOR_PRIVATE_KEY
 
 The private key for the operator account.
 
-### TREASURY_ACCOUNT_ID
+#### TREASURY_ACCOUNT_ID
 
 The Hedera account ID that will hold the NFTs.
 
-### TREASURY_PRIVATE_KEY
+#### TREASURY_PRIVATE_KEY
 
 The private key for the treasury account.
 
-### AUTO_RENEW_ACCOUNT_ID
+#### AUTO_RENEW_ACCOUNT_ID
 
 The Hedera account ID that will be used to auto renew the NFT token. If no account is provided, the treasury account will be used.
 
-### AUTO_RENEW_PRIVATE_KEY
+#### AUTO_RENEW_PRIVATE_KEY
 
 The private key for the auto renew account.
 
-### NFT_TOKEN_ID
+#### NFT_TOKEN_ID
 
 The token ID that the mint command will mint NFTs to.
 
-### NFT_SUPPLY_PRIVATE_KEY
+#### NFT_SUPPLY_PRIVATE_KEY
 
 The private key for the NFT supply account.
 
-### MERGE_ATTRIBUTES_TO_PROPERTIES
+#### MERGE_ATTRIBUTES_TO_PROPERTIES
 
 If you set `MERGE_ATTRIBUTES_TO_PROPERTIES` to `true` then any attributes that you add to your NFT will be duplicated to the properties field as key value pairs, example:
 
@@ -126,7 +126,7 @@ If you set `MERGE_ATTRIBUTES_TO_PROPERTIES` to `true` then any attributes that y
 
 ## Creating a New Token
 
-Add a file called `./input/tokenInfo.json` with the following format and update the values to suit your needs.
+Create a folder called `input` at the root of this project. Add a file in this `input` folder called `tokenInfo.json` with the following format and update the values to suit your needs.
 
 ```json
 {
@@ -148,13 +148,27 @@ Add a file called `./input/tokenInfo.json` with the following format and update 
 
 Run the following command to create the token:
 
+Decide whether you would like a new Supply Key to be generated for you or if you would like to use an existing one.
+
+If you would like to use an existing key, then add the private key to the `SUPPLY_PRIVATE_KEY` environment variable in your `.env.development` file for Testnet or your `.env.production` file for mainnet.
+
+**For Testnet**
+
 ```bash
 $ npm run token:create
 or
 $ yarn token:create
 ```
 
-This will output a new file at `./output/token-secrets-0.0.000000.json`. This file contains the token ID and the private key for the token supply account. You will need to add these to your `.env.development` file in order to mint NFTs.
+**For Mainnet**
+
+```bash
+$ NODE_ENV=production npm run token:create
+or
+$ NODE_ENV=production yarn token:create
+```
+
+This will output a new file at `./output/token-secrets-0.0.000000.json`. This file contains the token ID and the private key for the token supply account. You will need to add these to your `.env.development` file for Testnet or your `.env.production` file for mainnet in order to mint NFTs.
 
 # IMPORTANT: BACKUP YOUR SUPPLY PRIVATE KEY! YOU WILL NEED THIS TO MINT NFTS.
 
@@ -219,10 +233,20 @@ The mint script will automatically upload all your media assets to IPFS. All you
 
 To mint your collection, be sure your operator has got enough HBAR to mint them all, then simply run:
 
+**For Testnet**
+
 ```bash
 $ npm run token:mint
 or
 $ yarn token:mint
+```
+
+**For Mainnet**
+
+```bash
+$ NODE_ENV=production npm run token:mint
+or
+$ NODE_ENV=production yarn token:mint
 ```
 
 Once minted, you can check your collection out using any good NFT explorer. A few examples being:
@@ -249,10 +273,20 @@ To burn specific NFTs from your token collection, simply create a new file at `.
 
 Then run the following command:
 
+**For Testnet**
+
 ```bash
 $ npm run token:burn
 or
 $ yarn token:burn
+```
+
+**For Mainnet**
+
+```bash
+$ NODE_ENV=production npm run token:burn
+or
+$ NODE_ENV=production yarn token:burn
 ```
 
 ## Cloning Tokens
@@ -261,7 +295,7 @@ Hedera have begun resetting the testnet every quarter, which means that all the 
 
 The `token:clone` script will allow you to clone an existing token from mainnet and all of its NFTs to a new token on testnet.
 
-You'll need to fill the following fields in your `.env.development` file:
+You'll need to fill the following fields in your `.env.development` file for Testnet or your `.env.production` file for mainnet:
 
 ```bash
   OPERATOR_ACCOUNT_ID=0.0.xxxxxx
