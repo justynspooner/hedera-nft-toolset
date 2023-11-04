@@ -20,10 +20,24 @@ $ yarn
 
 ## Setup
 
-Copy the `env_example` file to `.env` and update all the values as detailed below.
+To run any of the scripts you will need to create an environment file in the root of the project.
+
+This file is used to store all the environment variables that are used by the scripts.
+
+You will create 2 new files, one for development and one for production. Name them:
+
+- `.env.development`
+  This is where you will store all your testnet account details.
+
+- `.env.production`
+  This is where you will store all your mainnet account details.
+
+Copy the contents of the `env_example` to your new files and update all the values as detailed below.
+
+This command will create the new files for you:
 
 ```bash
-$ cp env_example .env
+$ cp env_example .env.development && cp env_example .env.production
 ```
 
 ```bash
@@ -138,13 +152,13 @@ or
 $ yarn token:create
 ```
 
-This will output a new file at `./output/token-secrets-0.0.000000.json`. This file contains the token ID and the private key for the token supply account. You will need to add these to your `.env` file in order to mint NFTs.
+This will output a new file at `./output/token-secrets-0.0.000000.json`. This file contains the token ID and the private key for the token supply account. You will need to add these to your `.env.development` file in order to mint NFTs.
 
 # IMPORTANT: BACKUP YOUR SUPPLY PRIVATE KEY! YOU WILL NEED THIS TO MINT NFTS.
 
 ## Minting NFTs
 
-Make sure to set the `NFT_TOKEN_ID` and `NFT_SUPPLY_PRIVATE_KEY` in your `.env` file.
+Make sure to set the `NFT_TOKEN_ID` and `NFT_SUPPLY_PRIVATE_KEY` in your `.env.development` file.
 
 Modify the `mintQueue.json` file, by filling the array with the NFTs you would like to mint.
 
@@ -245,7 +259,7 @@ Hedera have begun resetting the testnet every quarter, which means that all the 
 
 The `token:clone` script will allow you to clone an existing token from mainnet and all of its NFTs to a new token on testnet.
 
-You'll need to fill the following fields in your `.env` file:
+You'll need to fill the following fields in your `.env.development` file:
 
 ```bash
   OPERATOR_ACCOUNT_ID=0.0.xxxxxx
