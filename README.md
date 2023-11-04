@@ -183,6 +183,7 @@ The format should be like this example:
 ```json
 [
   {
+    "quantity": 1,
     "name": "Name of the first NFT",
     "description": "A description of the first NFT",
     "creator": "Name of the creator",
@@ -192,6 +193,7 @@ The format should be like this example:
       {
         "uri": "highres/highResolutionImage1.jpeg",
         "type": "image/jpeg",
+        "is_default_file": true,
         "metadata": {
           "name": "High Resolution Image 1",
           "description": "A high resolution image"
@@ -214,6 +216,7 @@ The format should be like this example:
     ]
   },
   {
+    "quantity": 5,
     "name": "Name of the second NFT",
     "description": "A description of the second NFT",
     "creator": "Name of the creator",
@@ -225,9 +228,30 @@ The format should be like this example:
         "type": "image/jpeg"
       }
     ]
+  },
+  {
+    "quantity": 500,
+    "name": "Hello Future Live Let's Go!",
+    "creator": "dragmaLABS",
+    "description": "Hello Future Live is here! Embrace the Future Today!",
+    "image": "hfl2023/image.png",
+    "type": "image/png",
+    "format": "HIP412@2.0.0",
+    "files": [
+      {
+        "uri": "hfl2023/hfl.glb",
+        "type": "model/gltf-binary",
+        "is_default_file": true,
+        "metadata": {
+          "name": "Rocket HFL 3D Model"
+        }
+      }
+    ]
   }
 ]
 ```
+
+The above example will mint 3 different NFTs into your token across 506 serials, the first NFT has 1 copy, the second NFT has 5 copies and the third NFT has 500 copies. These will all be created under the token ID set in the environment variable `NFT_TOKEN_ID` in your `.env.development` file for Testnet or your `.env.production` file for mainnet.
 
 The mint script will automatically upload all your media assets to IPFS. All you need to do is copy your files to the `./input/media` folder and then reference them in the `mintQueue.json` file as shown above. It's important to note that the `image` and `uri` fields should be relative paths to the `./input/media` folder and should match the file names exactly.
 
